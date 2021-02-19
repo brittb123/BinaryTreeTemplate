@@ -9,16 +9,45 @@ BinaryTree::~BinaryTree()
 void BinaryTree::insert(int value)
 {
 	//If the tree is empty, set the root to be a new node with the given value.
+	if (isEmpty())
+	{
+		m_root = new TreeNode(value);
+
+	}
 
 	//Create a TreeNode pointer that will act as an iterator pointing to the current node and set it to the root.
 	//Create a TreeNode pointer that will act as an iterator pointing to the parent 
 	//of the current node and set it to the root.
+	TreeNode* current = m_root;
+	TreeNode* parent;
 
 	//Loop until the the current node iterator reaches a nullptr.
 		//Check if the value we want to add to the tree is less than the value at the current node.
 			//Set the parent node to be the current node before the current node moves positions.
 			//Change the current node to be the child to its left and continue.
 
+	while(current != nullptr)
+	{
+		if(value < current->getData())
+		{
+			parent = current;
+			current = parent->getLeft();
+			if (parent->getLeft() == nullptr)
+				current = new TreeNode(value);
+		}
+
+		if (current->getData() < value)
+		{
+			parent = current;
+			current = parent->getRight();
+			if (parent->getRight() == nullptr)
+				current = new TreeNode(value);
+		}
+
+		if (current == current)
+			return;
+
+	}
 		//Check if the value we want to add to the tree is greater than the value at the current node.
 			//Set the parent node to be the current node before the current node moves positions.
 			//Change the current node to be the child to its right and continue.
@@ -84,7 +113,27 @@ void BinaryTree::remove(int value)
 TreeNode* BinaryTree::find(int value)
 {
 	//Initialize an iterator starting at the root.
+	TreeNode* current = m_root;
 
+	while(current != nullptr)
+	{
+		if (current->getData() == value) 
+		{
+			return current;
+		}
+		
+		else if (current->getData() != value && current->getData() > value)
+		{
+			current = current->getRight();
+		}
+
+		else if (current->getData() != value && current->getData() < value)
+		{
+			current = current->getRight();
+		}
+	}
+
+	return nullptr;
 	//Loop through the tree while the iterator isn't nullptr.
 		//Check if the node has the data we want
 			//Return the iterator
@@ -106,6 +155,32 @@ bool BinaryTree::findNode(int searchValue, TreeNode*& nodeFound, TreeNode*& node
 	//Create two iterators: one that will point to the current node to compare the search value to,
 	//and the other to hold a reference to the parent.
 
+	TreeNode* parent;
+	TreeNode* current = m_root;
+
+	while (current != nullptr)
+	{
+		if (searchValue == current->getData())
+		{
+			nodeFound = current;
+			parent = nodeParent;
+			return true;
+		}
+
+		if (searchValue != current->getData() && searchValue < current->getData())
+		{
+			parent = current;
+			current = current->getLeft();
+		}
+
+		if (searchValue != current->getData() && searchValue > current->getData())
+		{
+			parent = current;
+			current = current->getRight();
+		}
+	}
+
+	return false;
 	//Loop while the current node iterator isn't nullptr/
 		//Check if the search value is the same as the current nodes data.
 			//Set the node found argument to be the current node and the parent node to be the parent node iterator.
@@ -123,4 +198,27 @@ bool BinaryTree::findNode(int searchValue, TreeNode*& nodeFound, TreeNode*& node
 
 void BinaryTree::draw(TreeNode* currentNode, int x, int y, int horizontalSpacing, TreeNode* selected)
 {
+	if(currentNode)
+	{
+		// If the node has a left child this portion is called
+		if (currentNode->hasLeft())
+		{
+			// First the line connects the root and the node
+			DrawLine(x, y, x - horizontalSpacing, y + 80, RED);
+
+			// Draws the node's left at a specific location and selects ut
+			draw(currentNode->getLeft(), x - horizontalSpacing, y + 80, horizontalSpacing, selected);
+		}
+
+		// If the current node only has a right or both then this is called
+		if (currentNode->hasRight())
+		{
+			// A red line is drawn connecting the nodes
+			DrawLine(x, y, x + horizontalSpacing, y + 80, RED);
+
+			// Draws the Right node and selects if the only child
+			draw(currentNode->getRight(), x + horizontalSpacing, y + 80, horizontalSpacing, selected);
+
+		}
+	}
 }
