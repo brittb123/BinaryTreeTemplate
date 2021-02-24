@@ -56,7 +56,7 @@ void BinaryTree::insert(int value)
 		
 }
 
-void BinaryTree::remove(int value)
+ void BinaryTree::remove(int value)
 {
 	//Create two TreeNode pointers: one to hold a reference to the node we want to remove
 	//and another to hold a reference to its parent.
@@ -82,7 +82,7 @@ void BinaryTree::remove(int value)
 
 		while (Iterator->hasLeft())
 		{
-			secondIterator = Iterator;
+			secondIterator->setData(Iterator->getData());
 			Iterator = Iterator->getLeft();
 		}
 
@@ -92,7 +92,7 @@ void BinaryTree::remove(int value)
 		{
 			if (secondIterator->getLeft()->getData() == Remove->getData())
 			{
-				secondIterator->setRight(Iterator->getLeft());
+				secondIterator->setLeft(Iterator->getRight());
 			}
 		}
 
@@ -100,11 +100,11 @@ void BinaryTree::remove(int value)
 		{
 			if (secondIterator->getRight()->getData() == Remove->getData())
 			{
-				secondIterator->setLeft(Iterator->getRight());
+				secondIterator->setRight(Iterator->getLeft());
 			}
 		}
 
-		delete Iterator;
+		delete(Iterator);
 	}
 
 	else
@@ -128,7 +128,7 @@ void BinaryTree::remove(int value)
 		if (Remove == m_root)
 			m_root = m_root->getLeft();
 
-		delete Remove;
+		delete(Remove);
 	}
 }
 
@@ -137,7 +137,6 @@ TreeNode* BinaryTree::find(int value)
 	//Initialize an iterator starting at the root.
 	TreeNode* current = m_root;
 
-	
 	while(current != nullptr)
 	{
 		// If the value's data equal's the currents data then current is returned
@@ -150,7 +149,7 @@ TreeNode* BinaryTree::find(int value)
 		else if (current->getData() != value && current->getData() > value)
 		{
 			// Current equals current's right child node
-			current = current->getRight();
+			current = current->getLeft();
 		}
 
 		// If the value does not equal current and the data from current is less than the value

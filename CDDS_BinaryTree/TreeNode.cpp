@@ -9,23 +9,21 @@ TreeNode::TreeNode(int value)
 
 void TreeNode::draw(int x, int y, bool selected)
 {
-	// An array to store the characters to print to the screen
+	//creates an array to store the converted value to a string.
 	static char buffer[10];
 
-	// Converts the m_value to an int to store in the array
+	//converts int to string
 	sprintf(buffer, "%d", m_value);
 
-	// Draws a circle that is yellow for the outline
+	//Draws the outer circle of the node
 	DrawCircle(x, y, 30, YELLOW);
 
-	// If selected is true a new green circle is made for the center of the outline
+	//If the mnode is selected, make it green if not its black
 	if (selected)
 		DrawCircle(x, y, 28, GREEN);
-
-	// If it is not selected a circle is drawn in a black color to resemble not selected
 	else
 		DrawCircle(x, y, 28, BLACK);
 
-	// Draws the text in the center of the circle
+	//draws the text in the center of the node
 	DrawText(buffer, x - 12, y - 12, 12, WHITE);
 }
