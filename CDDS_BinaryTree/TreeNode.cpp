@@ -13,7 +13,7 @@ void TreeNode::draw(int x, int y, bool selected)
 	static char buffer[10];
 
 	// Converts the m_value to an int to store in the array
-	sprintf(buffer, "Xd", m_value);
+	sprintf(buffer, "%d", m_value);
 
 	// Draws a circle that is yellow for the outline
 	DrawCircle(x, y, 30, YELLOW);

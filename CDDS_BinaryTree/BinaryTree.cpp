@@ -17,7 +17,7 @@ void BinaryTree::insert(int value)
 
 	TreeNode* current = m_root;
 
-	TreeNode* parent;
+	TreeNode* parent = m_root;;
 
 	while(current != nullptr)
 	{
@@ -28,31 +28,31 @@ void BinaryTree::insert(int value)
 			parent = current;
 			
 			// Current is set to be the left of the parent 
-			current = parent->getLeft();
-
-			// If the parent's left is null a new node is made with the value and placed at the location
-			if (parent->getLeft() == nullptr)
-				current = new TreeNode(value);
+			current = current->getLeft();
 		}
 
 		// IF the value is More than this piece of code is called
-		if (current->getData() < value)
+        else if (current->getData() < value)
 		{
 			// The parent is set to be the current
 			parent = current;
 
 			// Current is set to be the right of the parent 
-			current = parent->getRight();
-
-			// If the parent's right is null a new node is made with the value and placed at the location
-			if (parent->getRight() == nullptr)
-				current = new TreeNode(value);
+			current = current->getRight();
 		}
 
-		if (current == current)
+		else if (value == current->getData())
 			return;
-
 	}
+
+	// If the parent's left is null a new node is made with the value and placed at the location
+	if (parent->getData() < value)
+		parent->setRight(new TreeNode(value));
+
+
+	// If the parent's left is null a new node is made with the value and placed at the location
+	 if (parent->getData() > value)
+		 parent->setLeft(new TreeNode(value));
 		
 }
 
@@ -61,49 +61,75 @@ void BinaryTree::remove(int value)
 	//Create two TreeNode pointers: one to hold a reference to the node we want to remove
 	//and another to hold a reference to its parent.
 
-	//Try to find the node that matches the value given and its parent in the tree.
-	//If the node cannot be found return.
+	TreeNode* Remove = m_root;
+	TreeNode* Parent = m_root;
 
+
+	//Try to find the node that matches the value given and its parent in the tree.
+	findNode(value, Remove, Parent);
+
+	//If the node cannot be found return.
+	if (!find(value))
+		return;
 
 	//Check to see if the node has a right
+	if (Remove->hasRight())
+	{
+		TreeNode* Iterator = m_root;
+		TreeNode* secondIterator = m_root;
 
-		//Initialize two iterators to find the node whose data will be copied and its parent.
+		Remove->setRight(Iterator);
 
-		//Set the first iterator to point to the right child of the node we want to remove.
+		while (Iterator->hasLeft())
+		{
+			secondIterator = Iterator;
+			Iterator = Iterator->getLeft();
+		}
 
-		//Loop while the first iterator has a value to its left
+		Remove->setData(Iterator->getData());
 
-			//Set the second iterator to be the value of the first iterator.
-			//Set the first iterator to be the value to the left of it
+		if (secondIterator->hasLeft())
+		{
+			if (secondIterator->getLeft()->getData() == Remove->getData())
+			{
+				secondIterator->setRight(Iterator->getLeft());
+			}
+		}
 
-		//end loop
+		if (secondIterator->hasRight())
+		{
+			if (secondIterator->getRight()->getData() == Remove->getData())
+			{
+				secondIterator->setLeft(Iterator->getRight());
+			}
+		}
 
-		//Once the smallest value has been found, copy the data in first iterator to the node we want to remove.
+		delete Iterator;
+	}
 
-		//Check if the second iterator has a left child.
-			//Check if the left child stores the same data as the node we wanted to remove.
-				//Set the second iterators left child to be the first iterators right child.
+	else
+	{
+		if (Parent->hasLeft())
+		{
+			if (Parent->getLeft()->getData() == Remove->getData())
+			{
+				Parent->setLeft(Remove->getLeft());
+			}
+		}
 
-		//Check if the second iterator has a right child.
-			//Check if the right child contains the same data as the node we want to remove.
-				//Set the right child of the second iterator to be the right child of the first iterator.
+		if (Parent->hasRight())
+		{
+			if (Parent->getRight()->getData() == Remove->getData())
+			{
+				Parent->setRight(Remove->getRight());
+			}
+		}
 
-		//Delete the first iterator
+		if (Remove == m_root)
+			m_root = m_root->getLeft();
 
-	//Otherwise, if the node doesn't have a right child
-
-		//check if the parent of the node to remove has a left child.
-			//Check if the data that the left child holds is the same as the data the node to remove holds.
-				//Set the left child of the parent node to be the left child of the node to remove.
-
-		//Check if the parent of the node to remove has a right child.
-			//Check if the data the right child holds is the same as the data the node to remove holds.
-				//Set the right child of the parent node to be the left child of the node to remove.
-
-		//Check if the node we want to remove is the root.
-			//Set the root to be its left child.
-
-		//Delete the pointer that points to the node to remove.
+		delete Remove;
+	}
 }
 
 TreeNode* BinaryTree::find(int value)
@@ -141,6 +167,7 @@ TreeNode* BinaryTree::find(int value)
 
 void BinaryTree::draw(TreeNode* selected)
 {
+	draw(m_root, 400, 40, 400, selected);
 }
 
 bool BinaryTree::findNode(int searchValue, TreeNode*& nodeFound, TreeNode*& nodeParent)
@@ -148,7 +175,7 @@ bool BinaryTree::findNode(int searchValue, TreeNode*& nodeFound, TreeNode*& node
 	//Create two iterators: one that will point to the current node to compare the search value to,
 	//and the other to hold a reference to the parent.
 
-	TreeNode* parent;
+	TreeNode* parent= m_root;
 	TreeNode* current = m_root;
 
 	while (current != nullptr)
@@ -191,6 +218,8 @@ bool BinaryTree::findNode(int searchValue, TreeNode*& nodeFound, TreeNode*& node
 
 void BinaryTree::draw(TreeNode* currentNode, int x, int y, int horizontalSpacing, TreeNode* selected)
 {
+	horizontalSpacing /= 2;
+
 	if(currentNode)
 	{
 		// If the node has a left child this portion is called
@@ -211,7 +240,8 @@ void BinaryTree::draw(TreeNode* currentNode, int x, int y, int horizontalSpacing
 
 			// Draws the Right node and selects if the only child
 			draw(currentNode->getRight(), x + horizontalSpacing, y + 80, horizontalSpacing, selected);
-
 		}
+
+		currentNode->draw(x, y, (selected == currentNode));
 	}
 }
